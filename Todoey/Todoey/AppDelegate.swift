@@ -11,27 +11,32 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
+    var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // アプリが読み込まれた時に呼び出される場所。
         return true
     }
 
-    // MARK: UISceneSession Lifecycle
-
-    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        // Called when a new scene session is being created.
-        // Use this method to select a configuration to create the new scene with.
-        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+    func applicationWillResignActive(_ application: UIApplication) {
+        // アプリケーションがアクティブ状態から非アクティブ状態に移行しようとしているときに送信されます。これは、特定の種類の一時的な中断（電話の着信やSMSメッセージなど）や、ユーザがアプリケーションを終了してバックグラウンド状態に移行し始めたときに発生する可能性があります。
+        // この方法を使用して、進行中のタスクを一時停止し、タイマーを無効にし、OpenGL ESのフレームレートをスロットルダウンします。ゲームはこの方法を使って一時停止してください。
     }
 
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        // Called when the user discards a scene session.
-        // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        // このメソッドを使用して、共有リソースを解放し、ユーザーデータを保存し、タイマーを無効にし、アプリケーションの状態情報を十分に保存して、後でアプリケーションが終了した場合にアプリケーションを現在の状態に戻すことができます。
+        // アプリケーションがバックグラウンドでの実行をサポートしている場合、このメソッドはユーザが終了したときに applicationWillTerminate: の代わりに呼ばれます。
     }
 
+    func applicationWillEnterForeground(_ application: UIApplication) {
+        // バックグラウンドから非アクティブ状態への移行の一部として呼び出されます。ここでは、バックグラウンドに入るときに行った変更の多くを元に戻すことができます。
+    }
 
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        // アプリケーションがアクティブでない間に一時停止していた（またはまだ起動していない）タスクを再起動します。アプリケーションが以前にバックグラウンドにあった場合は、オプションでユーザー インターフェイスをリフレッシュします。
+    }
+
+    func applicationWillTerminate(_ application: UIApplication) {
+        // アプリケーションが終了しようとしているときに呼び出されます。必要に応じてデータを保存します。applicationDidEnterBackground: も参照してください。
+    }
 }
-

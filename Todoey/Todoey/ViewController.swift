@@ -12,10 +12,17 @@ import UIKit
 class TodoListViewController: UITableViewController {
     
     var itemArray = ["Find Mike", "Buy Eggs", "Destory Demogorgon"]
+    
+    // keyとvalueをアプリの起動時に永続的に保存するデフォルトのデータベース。
+    let defaults = UserDefaults.standard
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        //  defaults.arrayが空ならアプリがクラッシュするのでif letを使う。文字列の配列としてキャストする。
+        if let items = defaults.array(forKey: "ToDoListArray") as? [String] {
+            itemArray = items
+        }
     }
     // MARK - Tableview Datasource Methods
     
@@ -63,6 +70,9 @@ class TodoListViewController: UITableViewController {
             //クロージャの中にいるので、itemArrayが存在する場所
             //(現在の場所でコンパイラに明示的に指示するために「self」を指定する必要がある。
             self.itemArray.append(textField.text!)
+            
+            // forKeyPathはUserDefaults内でこの配列を識別するためのもの。
+            self.defaults.set(self.itemArray, forKey: "ToDoListArray")
             
             // tableViewの行とセクションが再読み込みされる。
             self.tableView.reloadData()
