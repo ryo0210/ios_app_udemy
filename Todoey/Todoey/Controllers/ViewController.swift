@@ -54,11 +54,10 @@ class TodoListViewController: UITableViewController {
 //            itemArray = items
 //        }
 
-        
-        //loadItems()
+        loadItems()
         
     }
-    // MARK - Tableview Datasource Methods
+    // MARK: - Tableview Datasource Methods
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return itemArray.count
@@ -88,7 +87,7 @@ class TodoListViewController: UITableViewController {
         return cell
     }
 
-    // MARK - TableView Delegate Methods
+    // MARK: - TableView Delegate Methods
     
     // どの行が選択されたかを検出するデリゲートメソッド(didSelectRowAt indexPath)をテーブルに追加
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -107,7 +106,10 @@ class TodoListViewController: UITableViewController {
 //        }
         
         // 上の5行のコードを1行に置き換えられる。
-        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+//        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+        
+        context.delete(itemArray[indexPath.row])
+        itemArray.remove(at: indexPath.row)
         
         saveItems()
         
@@ -119,7 +121,7 @@ class TodoListViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    // MARK - Adds new items
+    // MARK: - Adds new items
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
         //addButtonPressed内で使えるローカル変数を作成する。
@@ -166,7 +168,7 @@ class TodoListViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    // MARK - Model Manupulation Methods アイテムを保存する関数コード
+    // MARK: - Model Manupulation Methods
     
     func saveItems() {
 //        let encoder = PropertyListEncoder()
@@ -182,7 +184,7 @@ class TodoListViewController: UITableViewController {
 
     }
     
-//    func loadItems() {
+    func loadItems() {
 //        if let data = try? Data(contentsOf: dataFilePath!) {
 //            let decoder = PropertyListDecoder()
 //            do {
@@ -191,5 +193,45 @@ class TodoListViewController: UITableViewController {
 //                print(error)
 //            }
 //        }
-//    }
+        // NSFetchRequest<Item>: データタイプを指定しないとエラーになる。
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        
+        do {
+            itemArray = try context.fetch(request)
+        } catch {
+            print("=======loadItems=======\(error)")
+        }
+    }
+
+}
+
+// MARK: - Search bar methods
+extension TodoListViewController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        
+        // 検索ボタンを押すと、入力したテキストが%@に置き換わる。
+        // クエリ内容は、アイテムのタイトルにこの検索テキストを含んでいるアイテムを探す。
+        // [cd]を付けると大文字と小文字を区別しない。
+        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        
+        // 指定した検索方法を適用させる。
+        request.predicate = predicate
+        
+        // 各アイテムのタイトルであるキーを使用してソートしたい。
+        // ascending: boolは昇順にするかどうか。
+        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+        
+        // 指定したソートする方法を適用させる。
+        request.sortDescriptors = [sortDescriptor]
+        
+        do {
+            itemArray = try context.fetch(request)
+        } catch {
+            print("=======searchBarSearchButtonClicked=======\(error)")
+        }
+        
+        tableView.reloadData()
+    }
 }
