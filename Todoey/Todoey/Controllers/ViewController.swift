@@ -184,7 +184,7 @@ class TodoListViewController: UITableViewController {
 
     }
     
-    func loadItems() {
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
 //        if let data = try? Data(contentsOf: dataFilePath!) {
 //            let decoder = PropertyListDecoder()
 //            do {
@@ -194,13 +194,14 @@ class TodoListViewController: UITableViewController {
 //            }
 //        }
         // NSFetchRequest<Item>: データタイプを指定しないとエラーになる。
-        let request : NSFetchRequest<Item> = Item.fetchRequest()
+//        let request : NSFetchRequest<Item> = Item.fetchRequest()
         
         do {
             itemArray = try context.fetch(request)
         } catch {
             print("=======loadItems=======\(error)")
         }
+        tableView.reloadData()
     }
 
 }
@@ -210,28 +211,30 @@ extension TodoListViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         let request : NSFetchRequest<Item> = Item.fetchRequest()
+        print(searchBar.text!)
         
         // 検索ボタンを押すと、入力したテキストが%@に置き換わる。
         // クエリ内容は、アイテムのタイトルにこの検索テキストを含んでいるアイテムを探す。
         // [cd]を付けると大文字と小文字を区別しない。
-        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-        
+//        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
         // 指定した検索方法を適用させる。
-        request.predicate = predicate
+//        request.predicate = predicate
+        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
         
         // 各アイテムのタイトルであるキーを使用してソートしたい。
         // ascending: boolは昇順にするかどうか。
-        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
-        
+//        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
         // 指定したソートする方法を適用させる。
-        request.sortDescriptors = [sortDescriptor]
+//        request.sortDescriptors = [sortDescriptor]
+        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
         
-        do {
-            itemArray = try context.fetch(request)
-        } catch {
-            print("=======searchBarSearchButtonClicked=======\(error)")
-        }
+//        do {
+//            itemArray = try context.fetch(request)
+//        } catch {
+//            print("=======searchBarSearchButtonClicked=======\(error)")
+//        }
+//        tableView.reloadData()
         
-        tableView.reloadData()
+        loadItems(with: request)
     }
 }
