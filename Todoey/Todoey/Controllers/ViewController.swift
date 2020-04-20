@@ -237,4 +237,21 @@ extension TodoListViewController: UISearchBarDelegate {
         
         loadItems(with: request)
     }
+    
+    // 検索バーのテキストが編集された時にトリガーする。
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0 {
+            loadItems()
+            
+            
+            // ユーザーインターフェイスに影響を与えるメソッドを記述するときはフォアグラウンドでそのメソッドを使用する。
+            // 作業項目の実行を管理するオブジェクトです。
+            DispatchQueue.main.async {
+                // アクティブ状態が解除される。
+                searchBar.resignFirstResponder()
+            }
+            
+            
+        }
+    }
 }
