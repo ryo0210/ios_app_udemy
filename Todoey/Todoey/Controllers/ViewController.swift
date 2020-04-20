@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 // 名前変更ができない泣
 class TodoListViewController: UITableViewController {
@@ -27,26 +28,34 @@ class TodoListViewController: UITableViewController {
     // (defaults.setのvalueの型がFloatならゲームの音量(defaults.set(0.25, forkey: "Volume")、
     // boolならBGMを流すかどうか(defaults.set(true, forkey: "MusicOn")などに使える。)
 //    let defaults = UserDefaults.standard
+    
+    
+    // Applicationの代わりにUIApplication.sharedを利用する。これは、シングルトンのアプリケーションインスタンスです。
+    // ??? Udemy:265
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let newItem1 = Item()
-        newItem1.title = "Find Mike"
-        itemArray.append(newItem1)
-        
-        let newItem2 = Item()
-        newItem2.title = "Buy Eggs"
-        itemArray.append(newItem2)
-        
-        let newItem3 = Item()
-        newItem3.title = "Destory Demogorgon"
-        itemArray.append(newItem3)
-        
+//        let newItem1 = Item()
+//        newItem1.title = "Find Mike"
+//        itemArray.append(newItem1)
+//
+//        let newItem2 = Item()
+//        newItem2.title = "Buy Eggs"
+//        itemArray.append(newItem2)
+//
+//        let newItem3 = Item()
+//        newItem3.title = "Destory Demogorgon"
+//        itemArray.append(newItem3)
+//
         //  defaults.arrayが空ならアプリがクラッシュするのでif letを使う。文字列の配列としてキャストする。
 //        if let items = defaults.array(forKey: "ToDoListArray") as? [Item] {
 //            itemArray = items
 //        }
+
+        
+        //loadItems()
         
     }
     // MARK - Tableview Datasource Methods
@@ -104,7 +113,7 @@ class TodoListViewController: UITableViewController {
         
         // アラートコントローラーを使って新しいアイテムを追加して時と、私たちはチェックマークをトグルし、
         // アイテムを保存しているアイテムの中にあるので、tableView.reloadData()を削除できる。　？？
-//        tableView.reloadData()
+        //tableView.reloadData()
         
         // cellを選択した時に、灰色になった後すぐ元の表示にもどる。
         tableView.deselectRow(at: indexPath, animated: true)
@@ -122,8 +131,12 @@ class TodoListViewController: UITableViewController {
         let action = UIAlertAction(title: "追加", style: .default) { (action) in
             // ユーザーがUIAlertの"追加"ボタンをクリックした後の処理。
             
-            let newItem1 = Item()
+            
+            let newItem1 = Item(context: self.context)
+            
+            
             newItem1.title = textField.text!
+            newItem1.done = false
             
             // textField.textが空なら"新しいタスク"という名前で追加する。
             // itemArray.append(textField.text ?? "新しいタスク")
@@ -137,7 +150,7 @@ class TodoListViewController: UITableViewController {
             self.saveItems()
             
             // tableViewの行とセクションが再読み込みされる。
-            self.tableView.reloadData()
+            //self.tableView.reloadData()
         }
         // このクロージャーはTextFieldがalertに追加された後にのみトリガーされる。
         alert.addTextField { (aletTextField) in
@@ -156,15 +169,27 @@ class TodoListViewController: UITableViewController {
     // MARK - Model Manupulation Methods アイテムを保存する関数コード
     
     func saveItems() {
-        let encoder = PropertyListEncoder()
-        
+//        let encoder = PropertyListEncoder()
         // カスタムデータベースに書き込み。
         do {
-            let data = try encoder.encode(itemArray)
-            try data.write(to: dataFilePath!)
+//            let data = try encoder.encode(itemArray)
+//            try data.write(to: dataFilePath!)
+            try context.save()
         } catch {
-            print(error)
+            print("=======saveItems=======\(error)")
         }
+        self.tableView.reloadData()
 
     }
+    
+//    func loadItems() {
+//        if let data = try? Data(contentsOf: dataFilePath!) {
+//            let decoder = PropertyListDecoder()
+//            do {
+//                itemArray = try decoder.decode([Item].self, from: data)
+//            } catch {
+//                print(error)
+//            }
+//        }
+//    }
 }
