@@ -14,6 +14,13 @@ class TodoListViewController: UITableViewController {
     
     var itemArray = [Item]()
     
+    var selectedCategory: Category? {
+        // 選択されたカテゴリが設定されるとすぐに起こるであろう値
+        didSet{
+            loadItems()
+        }
+    }
+    
     // Documentsフォルダへのファイルパスを作成する。ファイルシステムへのインターフェイスを提供するオブジェクト（よく分からん）
     // 共有ファイルマネージャーオブジェクトであるデフォルトのファイルマネージャーを使用します。
     // ディレクトリとドメインマスクが引数。ディレクトリにはドキュメントディレクトリを入れ、
@@ -53,8 +60,8 @@ class TodoListViewController: UITableViewController {
 //        if let items = defaults.array(forKey: "ToDoListArray") as? [Item] {
 //            itemArray = items
 //        }
-
-        loadItems()
+//
+//        loadItems()
         
     }
     // MARK: - Tableview Datasource Methods
@@ -139,6 +146,7 @@ class TodoListViewController: UITableViewController {
             
             newItem1.title = textField.text!
             newItem1.done = false
+            newItem1.parentCategory = self.selectedCategory
             
             // textField.textが空なら"新しいタスク"という名前で追加する。
             // itemArray.append(textField.text ?? "新しいタスク")
@@ -156,7 +164,7 @@ class TodoListViewController: UITableViewController {
         }
         // このクロージャーはTextFieldがalertに追加された後にのみトリガーされる。
         alert.addTextField { (aletTextField) in
-            aletTextField.placeholder = "新しいタスクを作る。"
+            aletTextField.placeholder = "新しいタスクを入力。"
             // aletTextFieldはalert.addTextFieldのクロージャーの内部でしか使えないので、
             // addButtonPressed全体で使えるように拡張する。
             textField = aletTextField
@@ -178,13 +186,15 @@ class TodoListViewController: UITableViewController {
 //            try data.write(to: dataFilePath!)
             try context.save()
         } catch {
-            print("=======saveItems=======\(error)")
+            print("Todo=======saveItems\(error)")
         }
         self.tableView.reloadData()
 
     }
     
-    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
+    // udemy: コース277の7分くらいからマジで分からん。むずい。
+    // 項目を読み込むために別のパラメータを追加すると、項目にロードするために述語や検索クエリを作成する。
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
 //        if let data = try? Data(contentsOf: dataFilePath!) {
 //            let decoder = PropertyListDecoder()
 //            do {
@@ -196,10 +206,25 @@ class TodoListViewController: UITableViewController {
         // NSFetchRequest<Item>: データタイプを指定しないとエラーになる。
 //        let request : NSFetchRequest<Item> = Item.fetchRequest()
         
+        
+        // 選択したカテゴリに一致するpearentカテゴリを持つアイテムのみをロードする。
+        // 現在選択されているカテゴリ名と一致するnameプロパティを持たなければならないというフォーマットで初期化する。
+        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
+        
+        if let addtionalPredicate = predicate {
+            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, addtionalPredicate])
+        } else {
+            request.predicate = categoryPredicate
+        }
+        
+//        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, predicate])
+//
+//        request.predicate = compoundPredicate
+        
         do {
             itemArray = try context.fetch(request)
         } catch {
-            print("=======loadItems=======\(error)")
+            print("Todo=======loadItems\(error)")
         }
         tableView.reloadData()
     }
@@ -211,7 +236,6 @@ extension TodoListViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         let request : NSFetchRequest<Item> = Item.fetchRequest()
-        print(searchBar.text!)
         
         // 検索ボタンを押すと、入力したテキストが%@に置き換わる。
         // クエリ内容は、アイテムのタイトルにこの検索テキストを含んでいるアイテムを探す。
@@ -219,7 +243,7 @@ extension TodoListViewController: UISearchBarDelegate {
 //        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
         // 指定した検索方法を適用させる。
 //        request.predicate = predicate
-        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
         
         // 各アイテムのタイトルであるキーを使用してソートしたい。
         // ascending: boolは昇順にするかどうか。
@@ -235,7 +259,7 @@ extension TodoListViewController: UISearchBarDelegate {
 //        }
 //        tableView.reloadData()
         
-        loadItems(with: request)
+        loadItems(with: request, predicate: predicate)
     }
     
     // 検索バーのテキストが編集された時にトリガーする。
