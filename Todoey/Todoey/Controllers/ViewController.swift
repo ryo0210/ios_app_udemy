@@ -11,7 +11,7 @@ import UIKit
 import RealmSwift
 
 // 名前変更ができない泣
-class TodoListViewController: UITableViewController {
+class TodoListViewController: SwipeTableViewController {
     
     var todoItems: Results<Item>?
     let realm = try! Realm()
@@ -78,7 +78,8 @@ class TodoListViewController: UITableViewController {
         // let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         
         // 新しいテイブルビューセルとして下部で再初期化される。そして、それが再利用されるのでチェックされたアクセサリが
-        let cell = UITableViewCell(style: .default, reuseIdentifier: "ToDoItemCell")
+        //let cell = UITableViewCell(style: .default, reuseIdentifier: "ToDoItemCell")
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         if let item = todoItems?[indexPath.row] {
             cell.textLabel?.text = item.title
@@ -131,7 +132,7 @@ class TodoListViewController: UITableViewController {
             do {
                 try realm.write {
                     item.done = !item.done
-                    realm.delete(item)
+                    //realm.delete(item)
                 }
             } catch {
                 print("todo=======tableView\(error)")
@@ -233,7 +234,6 @@ class TodoListViewController: UITableViewController {
         // NSFetchRequest<Item>: データタイプを指定しないとエラーになる。
 //        let request : NSFetchRequest<Item> = Item.fetchRequest()
 
-
         // 選択したカテゴリに一致するpearentカテゴリを持つアイテムのみをロードする。
         // 現在選択されているカテゴリ名と一致するnameプロパティを持たなければならないというフォーマットで初期化する。
 //        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
@@ -257,9 +257,19 @@ class TodoListViewController: UITableViewController {
         todoItems = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
         tableView.reloadData()
     }
+    
+    override func updateModel(at indexPath: IndexPath) {
+        if let item = todoItems?[indexPath.row] {
+            do {
+                try realm.write {
+                    realm.delete(item)
+                }
+            } catch {
+                print("todo=======updateModel\(error)")
+            }
+        }
+    }
 }
-
-
 
 // MARK: - Search bar methods
 extension TodoListViewController: UISearchBarDelegate {
@@ -299,7 +309,6 @@ extension TodoListViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchBar.text?.count == 0 {
             loadItems()
-
 
             // ユーザーインターフェイスに影響を与えるメソッドを記述するときはフォアグラウンドでそのメソッドを使用する。
             // 作業項目の実行を管理するオブジェクトです。
