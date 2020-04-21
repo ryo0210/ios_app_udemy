@@ -271,8 +271,6 @@ class TodoListViewController: SwipeTableViewController {
     }
 }
 
-
-
 // MARK: - Search bar methods
 extension TodoListViewController: UISearchBarDelegate {
 
@@ -311,7 +309,6 @@ extension TodoListViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchBar.text?.count == 0 {
             loadItems()
-
 
             // ユーザーインターフェイスに影響を与えるメソッドを記述するときはフォアグラウンドでそのメソッドを使用する。
             // 作業項目の実行を管理するオブジェクトです。
