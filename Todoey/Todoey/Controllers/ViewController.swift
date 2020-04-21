@@ -126,8 +126,21 @@ class TodoListViewController: UITableViewController {
         
         // アラートコントローラーを使って新しいアイテムを追加して時と、私たちはチェックマークをトグルし、
         // アイテムを保存しているアイテムの中にあるので、tableView.reloadData()を削除できる。　？？
-        //tableView.reloadData()
         
+        if let item = todoItems?[indexPath.row] {
+            do {
+                try realm.write {
+                    item.done = !item.done
+                    realm.delete(item)
+                }
+            } catch {
+                print("todo=======tableView\(error)")
+            }
+        }
+        
+        tableView.reloadData()
+        
+
         // cellを選択した時に、灰色になった後すぐ元の表示にもどる。
         tableView.deselectRow(at: indexPath, animated: true)
     }
