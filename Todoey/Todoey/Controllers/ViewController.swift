@@ -162,6 +162,7 @@ class TodoListViewController: UITableViewController {
                     try self.realm.write {
                         let newItem1 = Item()
                         newItem1.title = textField.text!
+                        newItem1.dateCreated = Date()
                         currentCategory.items.append(newItem1)
                     }
                 } catch {
@@ -261,50 +262,53 @@ class TodoListViewController: UITableViewController {
 
 
 // MARK: - Search bar methods
-//extension TodoListViewController: UISearchBarDelegate {
-//
-//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-//        let request : NSFetchRequest<Item> = Item.fetchRequest()
-//
-//        // 検索ボタンを押すと、入力したテキストが%@に置き換わる。
-//        // クエリ内容は、アイテムのタイトルにこの検索テキストを含んでいるアイテムを探す。
-//        // [cd]を付けると大文字と小文字を区別しない。
-////        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-//        // 指定した検索方法を適用させる。
-////        request.predicate = predicate
-//        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-//
-//        // 各アイテムのタイトルであるキーを使用してソートしたい。
-//        // ascending: boolは昇順にするかどうか。
-////        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
-//        // 指定したソートする方法を適用させる。
-////        request.sortDescriptors = [sortDescriptor]
-//        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-//
-////        do {
-////            itemArray = try context.fetch(request)
-////        } catch {
-////            print("=======searchBarSearchButtonClicked=======\(error)")
-////        }
-////        tableView.reloadData()
-//
-//        loadItems(with: request, predicate: predicate)
-//    }
-//
-//    // 検索バーのテキストが編集された時にトリガーする。
-//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-//        if searchBar.text?.count == 0 {
-//            loadItems()
-//
-//
-//            // ユーザーインターフェイスに影響を与えるメソッドを記述するときはフォアグラウンドでそのメソッドを使用する。
-//            // 作業項目の実行を管理するオブジェクトです。
-//            DispatchQueue.main.async {
-//                // アクティブ状態が解除される。
-//                searchBar.resignFirstResponder()
-//            }
-//
-//
-//        }
-//    }
+extension TodoListViewController: UISearchBarDelegate {
 
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        //let request : NSFetchRequest<Item> = Item.fetchRequest()
+
+        // 検索ボタンを押すと、入力したテキストが%@に置き換わる。
+        // クエリ内容は、アイテムのタイトルにこの検索テキストを含んでいるアイテムを探す。
+        // [cd]を付けると大文字と小文字を区別しない。
+//        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        // 指定した検索方法を適用させる。
+//        request.predicate = predicate
+        //let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+
+        // 各アイテムのタイトルであるキーを使用してソートしたい。
+        // ascending: boolは昇順にするかどうか。
+//        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+        // 指定したソートする方法を適用させる。
+//        request.sortDescriptors = [sortDescriptor]
+        //request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+
+//        do {
+//            itemArray = try context.fetch(request)
+//        } catch {
+//            print("=======searchBarSearchButtonClicked=======\(error)")
+//        }
+//        tableView.reloadData()
+
+        //loadItems(with: request, predicate: predicate)
+        
+        todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true)
+        tableView.reloadData()
+    }
+
+    // 検索バーのテキストが編集された時にトリガーする。
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0 {
+            loadItems()
+
+
+            // ユーザーインターフェイスに影響を与えるメソッドを記述するときはフォアグラウンドでそのメソッドを使用する。
+            // 作業項目の実行を管理するオブジェクトです。
+            DispatchQueue.main.async {
+                // アクティブ状態が解除される。
+                searchBar.resignFirstResponder()
+            }
+
+
+        }
+    }
+}

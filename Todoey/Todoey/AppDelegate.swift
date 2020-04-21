@@ -19,14 +19,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // アプリが読み込まれた時に呼び出される場所。
         
 
-//        print(Realm.Configuration.defaultConfiguration.fileURL)
+        //print(Realm.Configuration.defaultConfiguration.fileURL)
 //        
 //        let data = Data()
 //        data.name = "ryo"
 //        data.age = 21
         
         do {
-            let realm = try Realm()
+            _ = try Realm()
             // 現在の状態の永続ストレージまたはrealmデータベースにコミットする。
 //            try realm.write {
 //                realm.add(data)
@@ -56,38 +56,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        // アプリケーションがアクティブでない間に一時停止していた（またはまだ起動していない）タスクを再起動します。アプリケーションが以前にバックグラウンドにあった場合は、オプションでユーザー インターフェイスをリフレッシュします。
 //    }
 
-    func applicationWillTerminate(_ application: UIApplication) {
-        // アプリケーションが終了しようとしているときに呼び出されます。必要に応じてデータを保存します。applicationDidEnterBackground: も参照してください。
-        self.saveContext()
-    }
+//    func applicationWillTerminate(_ application: UIApplication) {
+//        // アプリケーションが終了しようとしているときに呼び出されます。必要に応じてデータを保存します。applicationDidEnterBackground: も参照してください。
+//        self.saveContext()
+//    }
     
     // MARK: - Core Data stack
-    
-    // lazy: 必要な時、つまり使用しようとした時に値がロードされる。必要な時だけメモリを使用するように。
-    lazy var persistentContainer: NSPersistentContainer = {
-
-        let container = NSPersistentContainer(name: "DataModel")
-        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
-            if let error = error as NSError? {
-
-                fatalError("Unresolved error \(error), \(error.userInfo)")
-            }
-        })
-        return container
-    }()
-    
-    // MARK: - Core Data Saving support
-    
-    func saveContext () {
-        let context = persistentContainer.viewContext
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-            }
-        }
-    }
+//    // lazy: 必要な時、つまり使用しようとした時に値がロードされる。必要な時だけメモリを使用するように。
+//    lazy var persistentContainer: NSPersistentContainer = {
+//
+//        let container = NSPersistentContainer(name: "DataModel")
+//        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+//            if let error = error as NSError? {
+//
+//                fatalError("Unresolved error \(error), \(error.userInfo)")
+//            }
+//        })
+//        return container
+//    }()
+//
+//    // MARK: - Core Data Saving support
+//
+//    func saveContext () {
+//        let context = persistentContainer.viewContext
+//        if context.hasChanges {
+//            do {
+//                try context.save()
+//            } catch {
+//
+//                let nserror = error as NSError
+//                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+//            }
+//        }
+//    }
 }
