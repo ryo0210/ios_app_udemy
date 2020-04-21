@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import RealmSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +17,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // アプリが読み込まれた時に呼び出される場所。
+        
+
+        print(Realm.Configuration.defaultConfiguration.fileURL)
+        
+//        let data = Data()
+//        data.name = "ryo"
+//        data.age = 21
+        
+        do {
+            let realm = try Realm()
+            // 現在の状態の永続ストレージまたはrealmデータベースにコミットする。
+//            try realm.write {
+//                realm.add(data)
+//            }
+        } catch {
+            print("AppDelegate=======application\(error)")
+        }
+        
         return true
     }
 

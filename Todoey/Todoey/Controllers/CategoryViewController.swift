@@ -7,9 +7,11 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
 
 class CategoryViewController: UITableViewController {
+    
+    let realm = try! Realm()
     
     var categoryArray = [Category]()
     
@@ -50,23 +52,25 @@ class CategoryViewController: UITableViewController {
     }
     
     // MARK: - Data Mainpulation Methods
-    func saveCategory() {
+    func save(category: Category) {
         do {
-            try context.save()
+            try realm.write {
+                realm.add(category)
+            }
         } catch {
             print("Category=======saveItems\(error)")
         }
-        self.tableView.reloadData()
+        tableView.reloadData()
     }
     
     func loadCategory() {
-        let request: NSFetchRequest<Category> = Category.fetchRequest()
-        do {
-            categoryArray = try context.fetch(request)
-        } catch {
-            print("Category=======loadCategory\(error)")
-        }
-        tableView.reloadData()
+//        let request: NSFetchRequest<Category> = Category.fetchRequest()
+//        do {
+//            categoryArray = try context.fetch(request)
+//        } catch {
+//            print("Category=======loadCategory\(error)")
+//        }
+//        tableView.reloadData()
     }
         
     
@@ -76,11 +80,11 @@ class CategoryViewController: UITableViewController {
         
         let alert = UIAlertController(title: "新しいカテゴリを追加", message: "", preferredStyle: .alert)
         let action = UIAlertAction(title: "追加", style: .default) { (action) in
-            let newCategory = Category(context: self.context)
+            let newCategory = Category()
             newCategory.name = textField.text!
             
             self.categoryArray.append(newCategory)
-            self.saveCategory()
+            self.save(category: newCategory)
         }
         
         alert.addTextField { (alertTextField) in

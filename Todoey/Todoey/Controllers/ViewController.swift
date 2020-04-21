@@ -17,7 +17,7 @@ class TodoListViewController: UITableViewController {
     var selectedCategory: Category? {
         // 選択されたカテゴリが設定されるとすぐに起こるであろう値
         didSet{
-            loadItems()
+            //loadItems()
         }
     }
     
@@ -115,7 +115,7 @@ class TodoListViewController: UITableViewController {
         // 上の5行のコードを1行に置き換えられる。
 //        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
-        context.delete(itemArray[indexPath.row])
+        //context.delete(itemArray[indexPath.row])
         itemArray.remove(at: indexPath.row)
         
         saveItems()
@@ -141,18 +141,17 @@ class TodoListViewController: UITableViewController {
             // ユーザーがUIAlertの"追加"ボタンをクリックした後の処理。
             
             
-            let newItem1 = Item(context: self.context)
-            
-            
-            newItem1.title = textField.text!
-            newItem1.done = false
-            newItem1.parentCategory = self.selectedCategory
-            
+//            let newItem1 = Item(context: self.context)
+//
+//            newItem1.title = textField.text!
+//            newItem1.done = false
+//            newItem1.parentCategory = self.selectedCategory
+//
             // textField.textが空なら"新しいタスク"という名前で追加する。
             // itemArray.append(textField.text ?? "新しいタスク")
             //クロージャの中にいるので、itemArrayが存在する場所
             //(現在の場所でコンパイラに明示的に指示するために「self」を指定する必要がある。
-            self.itemArray.append(newItem1)
+//            self.itemArray.append(newItem1)
             
             // forKeyPathはUserDefaults内でこの配列を識別するためのもの。
 //            self.defaults.set(self.itemArray, forKey: "ToDoListArray")
@@ -194,88 +193,88 @@ class TodoListViewController: UITableViewController {
     
     // udemy: コース277の7分くらいからマジで分からん。むずい。
     // 項目を読み込むために別のパラメータを追加すると、項目にロードするために述語や検索クエリを作成する。
-    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
-//        if let data = try? Data(contentsOf: dataFilePath!) {
-//            let decoder = PropertyListDecoder()
-//            do {
-//                itemArray = try decoder.decode([Item].self, from: data)
-//            } catch {
-//                print(error)
-//            }
-//        }
-        // NSFetchRequest<Item>: データタイプを指定しないとエラーになる。
-//        let request : NSFetchRequest<Item> = Item.fetchRequest()
-        
-        
-        // 選択したカテゴリに一致するpearentカテゴリを持つアイテムのみをロードする。
-        // 現在選択されているカテゴリ名と一致するnameプロパティを持たなければならないというフォーマットで初期化する。
-        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
-        
-        if let addtionalPredicate = predicate {
-            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, addtionalPredicate])
-        } else {
-            request.predicate = categoryPredicate
-        }
-        
-//        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, predicate])
+//    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
+////        if let data = try? Data(contentsOf: dataFilePath!) {
+////            let decoder = PropertyListDecoder()
+////            do {
+////                itemArray = try decoder.decode([Item].self, from: data)
+////            } catch {
+////                print(error)
+////            }
+////        }
+//        // NSFetchRequest<Item>: データタイプを指定しないとエラーになる。
+////        let request : NSFetchRequest<Item> = Item.fetchRequest()
 //
-//        request.predicate = compoundPredicate
-        
-        do {
-            itemArray = try context.fetch(request)
-        } catch {
-            print("Todo=======loadItems\(error)")
-        }
-        tableView.reloadData()
-    }
+//
+//        // 選択したカテゴリに一致するpearentカテゴリを持つアイテムのみをロードする。
+//        // 現在選択されているカテゴリ名と一致するnameプロパティを持たなければならないというフォーマットで初期化する。
+//        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
+//
+//        if let addtionalPredicate = predicate {
+//            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, addtionalPredicate])
+//        } else {
+//            request.predicate = categoryPredicate
+//        }
+//
+////        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, predicate])
+////
+////        request.predicate = compoundPredicate
+//
+//        do {
+//            itemArray = try context.fetch(request)
+//        } catch {
+//            print("Todo=======loadItems\(error)")
+//        }
+//        tableView.reloadData()
+//    }
 
 }
 
 // MARK: - Search bar methods
-extension TodoListViewController: UISearchBarDelegate {
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        let request : NSFetchRequest<Item> = Item.fetchRequest()
-        
-        // 検索ボタンを押すと、入力したテキストが%@に置き換わる。
-        // クエリ内容は、アイテムのタイトルにこの検索テキストを含んでいるアイテムを探す。
-        // [cd]を付けると大文字と小文字を区別しない。
+//extension TodoListViewController: UISearchBarDelegate {
+//
+//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+//        let request : NSFetchRequest<Item> = Item.fetchRequest()
+//
+//        // 検索ボタンを押すと、入力したテキストが%@に置き換わる。
+//        // クエリ内容は、アイテムのタイトルにこの検索テキストを含んでいるアイテムを探す。
+//        // [cd]を付けると大文字と小文字を区別しない。
+////        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+//        // 指定した検索方法を適用させる。
+////        request.predicate = predicate
 //        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-        // 指定した検索方法を適用させる。
-//        request.predicate = predicate
-        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-        
-        // 各アイテムのタイトルであるキーを使用してソートしたい。
-        // ascending: boolは昇順にするかどうか。
-//        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
-        // 指定したソートする方法を適用させる。
-//        request.sortDescriptors = [sortDescriptor]
-        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-        
-//        do {
-//            itemArray = try context.fetch(request)
-//        } catch {
-//            print("=======searchBarSearchButtonClicked=======\(error)")
+//
+//        // 各アイテムのタイトルであるキーを使用してソートしたい。
+//        // ascending: boolは昇順にするかどうか。
+////        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+//        // 指定したソートする方法を適用させる。
+////        request.sortDescriptors = [sortDescriptor]
+//        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+//
+////        do {
+////            itemArray = try context.fetch(request)
+////        } catch {
+////            print("=======searchBarSearchButtonClicked=======\(error)")
+////        }
+////        tableView.reloadData()
+//
+//        loadItems(with: request, predicate: predicate)
+//    }
+//
+//    // 検索バーのテキストが編集された時にトリガーする。
+//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+//        if searchBar.text?.count == 0 {
+//            loadItems()
+//
+//
+//            // ユーザーインターフェイスに影響を与えるメソッドを記述するときはフォアグラウンドでそのメソッドを使用する。
+//            // 作業項目の実行を管理するオブジェクトです。
+//            DispatchQueue.main.async {
+//                // アクティブ状態が解除される。
+//                searchBar.resignFirstResponder()
+//            }
+//
+//
 //        }
-//        tableView.reloadData()
-        
-        loadItems(with: request, predicate: predicate)
-    }
-    
-    // 検索バーのテキストが編集された時にトリガーする。
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchBar.text?.count == 0 {
-            loadItems()
-            
-            
-            // ユーザーインターフェイスに影響を与えるメソッドを記述するときはフォアグラウンドでそのメソッドを使用する。
-            // 作業項目の実行を管理するオブジェクトです。
-            DispatchQueue.main.async {
-                // アクティブ状態が解除される。
-                searchBar.resignFirstResponder()
-            }
-            
-            
-        }
-    }
-}
+//    }
+
