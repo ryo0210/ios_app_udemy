@@ -19,8 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // アプリが読み込まれた時に呼び出される場所。
         
 
-        print(Realm.Configuration.defaultConfiguration.fileURL)
-        
+//        print(Realm.Configuration.defaultConfiguration.fileURL)
+//        
 //        let data = Data()
 //        data.name = "ryo"
 //        data.age = 21

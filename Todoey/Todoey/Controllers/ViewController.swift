@@ -7,17 +7,19 @@
 //
 
 import UIKit
-import CoreData
+//import CoreData
+import RealmSwift
 
 // 名前変更ができない泣
 class TodoListViewController: UITableViewController {
     
-    var itemArray = [Item]()
+    var todoItems: Results<Item>?
+    let realm = try! Realm()
     
     var selectedCategory: Category? {
         // 選択されたカテゴリが設定されるとすぐに起こるであろう値
         didSet{
-            //loadItems()
+            loadItems()
         }
     }
     
@@ -39,7 +41,7 @@ class TodoListViewController: UITableViewController {
     
     // Applicationの代わりにUIApplication.sharedを利用する。これは、シングルトンのアプリケーションインスタンスです。
     // ??? Udemy:265
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+//    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,7 +69,7 @@ class TodoListViewController: UITableViewController {
     // MARK: - Tableview Datasource Methods
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return itemArray.count
+        return todoItems?.count ?? 1
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -78,9 +80,8 @@ class TodoListViewController: UITableViewController {
         // 新しいテイブルビューセルとして下部で再初期化される。そして、それが再利用されるのでチェックされたアクセサリが
         let cell = UITableViewCell(style: .default, reuseIdentifier: "ToDoItemCell")
         
-        let item = itemArray[indexPath.row]
-        
-        cell.textLabel?.text = item.title
+        if let item = todoItems?[indexPath.row] {
+            cell.textLabel?.text = item.title
         
 //        if item.done == true {
 //            cell.accessoryType = .checkmark
@@ -88,9 +89,12 @@ class TodoListViewController: UITableViewController {
 //            cell.accessoryType = .none
 //        }
         
-        // 上の5行を1行で置き換えている。
-        // もし、item.doneがtrueならcell.accessoryTypeを.checkmarkに、そうでないなら.noneにする。
-        cell.accessoryType = item.done ? .checkmark : .none
+            // 上の5行を1行で置き換えている。
+            // もし、item.doneがtrueならcell.accessoryTypeを.checkmarkに、そうでないなら.noneにする。
+            cell.accessoryType = item.done ? .checkmark : .none
+        } else {
+            cell.textLabel?.text = "アイテムはありません。"
+        }
         return cell
     }
 
@@ -115,10 +119,10 @@ class TodoListViewController: UITableViewController {
         // 上の5行のコードを1行に置き換えられる。
 //        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
-        //context.delete(itemArray[indexPath.row])
-        itemArray.remove(at: indexPath.row)
+//        context.delete(itemArray[indexPath.row])
+//        todoItems.remove(at: indexPath.row)
         
-        saveItems()
+//        saveItems()
         
         // アラートコントローラーを使って新しいアイテムを追加して時と、私たちはチェックマークをトグルし、
         // アイテムを保存しているアイテムの中にあるので、tableView.reloadData()を削除できる。　？？
@@ -140,23 +144,31 @@ class TodoListViewController: UITableViewController {
         let action = UIAlertAction(title: "追加", style: .default) { (action) in
             // ユーザーがUIAlertの"追加"ボタンをクリックした後の処理。
             
+            if let currentCategory = self.selectedCategory {
+                do {
+                    try self.realm.write {
+                        let newItem1 = Item()
+                        newItem1.title = textField.text!
+                        currentCategory.items.append(newItem1)
+                    }
+                } catch {
+                    print("todo=======addButton\(error)")
+                }
+            }
             
-//            let newItem1 = Item(context: self.context)
-//
-//            newItem1.title = textField.text!
+            self.tableView.reloadData()
 //            newItem1.done = false
-//            newItem1.parentCategory = self.selectedCategory
-//
+
             // textField.textが空なら"新しいタスク"という名前で追加する。
             // itemArray.append(textField.text ?? "新しいタスク")
             //クロージャの中にいるので、itemArrayが存在する場所
             //(現在の場所でコンパイラに明示的に指示するために「self」を指定する必要がある。
-//            self.itemArray.append(newItem1)
+            //self.itemArray.append(newItem1)
             
             // forKeyPathはUserDefaults内でこの配列を識別するためのもの。
 //            self.defaults.set(self.itemArray, forKey: "ToDoListArray")
             
-            self.saveItems()
+            //self.saveItems()
             
             // tableViewの行とセクションが再読み込みされる。
             //self.tableView.reloadData()
@@ -177,37 +189,39 @@ class TodoListViewController: UITableViewController {
     
     // MARK: - Model Manupulation Methods
     
-    func saveItems() {
-//        let encoder = PropertyListEncoder()
-        // カスタムデータベースに書き込み。
-        do {
-//            let data = try encoder.encode(itemArray)
-//            try data.write(to: dataFilePath!)
-            try context.save()
-        } catch {
-            print("Todo=======saveItems\(error)")
-        }
-        self.tableView.reloadData()
-
-    }
+//    func saveItems() {
+////        let encoder = PropertyListEncoder()
+//        // カスタムデータベースに書き込み。
+//        do {
+////            let data = try encoder.encode(itemArray)
+////            try data.write(to: dataFilePath!)
+//            try context.save()
+//        } catch {
+//            print("Todo=======saveItems\(error)")
+//        }
+//        self.tableView.reloadData()
+//
+//    }
     
     // udemy: コース277の7分くらいからマジで分からん。むずい。
     // 項目を読み込むために別のパラメータを追加すると、項目にロードするために述語や検索クエリを作成する。
 //    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
-////        if let data = try? Data(contentsOf: dataFilePath!) {
-////            let decoder = PropertyListDecoder()
-////            do {
-////                itemArray = try decoder.decode([Item].self, from: data)
-////            } catch {
-////                print(error)
-////            }
-////        }
-//        // NSFetchRequest<Item>: データタイプを指定しないとエラーになる。
-////        let request : NSFetchRequest<Item> = Item.fetchRequest()
-//
-//
-//        // 選択したカテゴリに一致するpearentカテゴリを持つアイテムのみをロードする。
-//        // 現在選択されているカテゴリ名と一致するnameプロパティを持たなければならないというフォーマットで初期化する。
+    func loadItems() {
+
+//        if let data = try? Data(contentsOf: dataFilePath!) {
+//            let decoder = PropertyListDecoder()
+//            do {
+//                itemArray = try decoder.decode([Item].self, from: data)
+//            } catch {
+//                print(error)
+//            }
+//        }
+        // NSFetchRequest<Item>: データタイプを指定しないとエラーになる。
+//        let request : NSFetchRequest<Item> = Item.fetchRequest()
+
+
+        // 選択したカテゴリに一致するpearentカテゴリを持つアイテムのみをロードする。
+        // 現在選択されているカテゴリ名と一致するnameプロパティを持たなければならないというフォーマットで初期化する。
 //        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
 //
 //        if let addtionalPredicate = predicate {
@@ -215,20 +229,23 @@ class TodoListViewController: UITableViewController {
 //        } else {
 //            request.predicate = categoryPredicate
 //        }
+
+//        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, predicate])
 //
-////        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, predicate])
-////
-////        request.predicate = compoundPredicate
+//        request.predicate = compoundPredicate
 //
 //        do {
 //            itemArray = try context.fetch(request)
 //        } catch {
 //            print("Todo=======loadItems\(error)")
 //        }
-//        tableView.reloadData()
-//    }
-
+        
+        todoItems = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
+        tableView.reloadData()
+    }
 }
+
+
 
 // MARK: - Search bar methods
 //extension TodoListViewController: UISearchBarDelegate {

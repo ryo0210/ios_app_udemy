@@ -13,9 +13,9 @@ class CategoryViewController: UITableViewController {
     
     let realm = try! Realm()
     
-    var categoryArray = [Category]()
+    var categoryArray: Results<Category>?
     
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+//    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,14 +25,13 @@ class CategoryViewController: UITableViewController {
 
     // MARK: - TabaleView Datasource Methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categoryArray.count
+        return categoryArray?.count ?? 1
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //let cell = UITableViewCell(style: .default, reuseIdentifier: "CategoryCell")
         let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
-        cell.textLabel?.text = categoryArray[indexPath.row].name
-        // Itemに移動する処理って必要？？
+        cell.textLabel?.text = categoryArray?[indexPath.row].name ?? "カテゴリーがないです。"
         return cell
     }
     
@@ -47,7 +46,7 @@ class CategoryViewController: UITableViewController {
         // 選択されたカテゴリがなんであるかを取得する。
         // tableView.indexPathForSelectedRowはオプショナルで、選択された時にトリガーする。
         if let indexPath = tableView.indexPathForSelectedRow {
-            destinationVC.selectedCategory = categoryArray[indexPath.row]
+            destinationVC.selectedCategory = categoryArray?[indexPath.row]
         }
     }
     
@@ -70,7 +69,10 @@ class CategoryViewController: UITableViewController {
 //        } catch {
 //            print("Category=======loadCategory\(error)")
 //        }
-//        tableView.reloadData()
+        
+        categoryArray = realm.objects(Category.self)
+        
+        tableView.reloadData()
     }
         
     
@@ -83,7 +85,7 @@ class CategoryViewController: UITableViewController {
             let newCategory = Category()
             newCategory.name = textField.text!
             
-            self.categoryArray.append(newCategory)
+//            self.categoryArray.append(newCategory)
             self.save(category: newCategory)
         }
         
