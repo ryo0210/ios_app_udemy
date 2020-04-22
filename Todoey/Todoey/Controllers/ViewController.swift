@@ -14,6 +14,7 @@ import ChameleonFramework
 // 名前変更ができない泣
 class TodoListViewController: SwipeTableViewController {
     
+    @IBOutlet weak var searchBar: UISearchBar!
     var todoItems: Results<Item>?
     let realm = try! Realm()
     
@@ -67,6 +68,23 @@ class TodoListViewController: SwipeTableViewController {
 //        loadItems()
         tableView.separatorStyle = .none
         
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        if let colourHex = selectedCategory?.colour {
+            title = selectedCategory!.name
+            guard let navBar = navigationController?.navigationBar else {fatalError("ナビゲーションバーのエラー")}
+            navBar.backgroundColor = UIColor(hexString: colourHex)
+            
+            if let navBarColor = UIColor(hexString: colourHex) {
+                navBar.barTintColor = navBarColor
+                navBar.tintColor = ContrastColorOf(navBarColor, returnFlat: true)
+                navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor :ContrastColorOf(navBarColor, returnFlat: true)]
+                searchBar.barTintColor = UIColor(hexString: colourHex)
+
+            }
+            
+        }
     }
     // MARK: - Tableview Datasource Methods
     
