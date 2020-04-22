@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
 class CategoryViewController: SwipeTableViewController {
     
@@ -21,6 +22,7 @@ class CategoryViewController: SwipeTableViewController {
         super.viewDidLoad()
         
         loadCategory()
+        tableView.separatorStyle = .none
     }
 
     // MARK: - TabaleView Datasource Methods
@@ -32,7 +34,10 @@ class CategoryViewController: SwipeTableViewController {
         //let cell = UITableViewCell(style: .default, reuseIdentifier: "CategoryCell")
 //        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath) as! SwipeTableViewCell
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        cell.textLabel?.text = categoryArray?[indexPath.row].name ?? "カテゴリーがないです。"
+        if let category = categoryArray?[indexPath.row] {
+            cell.textLabel?.text = category.name
+            cell.backgroundColor = UIColor(hexString: category.colour)
+        }
 //        cell.delegate = self
         return cell
     }
@@ -100,6 +105,7 @@ class CategoryViewController: SwipeTableViewController {
         let action = UIAlertAction(title: "追加", style: .default) { (action) in
             let newCategory = Category()
             newCategory.name = textField.text!
+            newCategory.colour = UIColor.randomFlat().hexValue()
             
 //            self.categoryArray.append(newCategory)
             self.save(category: newCategory)

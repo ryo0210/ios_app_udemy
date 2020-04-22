@@ -11,7 +11,7 @@ import RealmSwift
 
 class Category: Object {
     @objc dynamic var name: String = ""
-    
+    @objc dynamic var colour: String = ""
     // 子関係を定義する。
     let items = List<Item>()
 }

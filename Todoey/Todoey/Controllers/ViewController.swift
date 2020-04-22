@@ -9,6 +9,7 @@
 import UIKit
 //import CoreData
 import RealmSwift
+import ChameleonFramework
 
 // 名前変更ができない泣
 class TodoListViewController: SwipeTableViewController {
@@ -64,6 +65,7 @@ class TodoListViewController: SwipeTableViewController {
 //        }
 //
 //        loadItems()
+        tableView.separatorStyle = .none
         
     }
     // MARK: - Tableview Datasource Methods
@@ -89,6 +91,10 @@ class TodoListViewController: SwipeTableViewController {
 //        } else {
 //            cell.accessoryType = .none
 //        }
+            if let colour = UIColor(hexString: selectedCategory!.colour)?.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(todoItems!.count)) {
+                cell.backgroundColor = colour
+                cell.textLabel?.textColor = ContrastColorOf(colour, returnFlat: true)
+            }
         
             // 上の5行を1行で置き換えている。
             // もし、item.doneがtrueならcell.accessoryTypeを.checkmarkに、そうでないなら.noneにする。
