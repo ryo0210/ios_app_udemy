@@ -6,7 +6,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Quote Table View Controller-->
+        <!--InspoQuotes-->
         <scene sceneID="y8u-qq-8YB">
             <objects>
                 <tableViewController id="PLB-fb-OqL" customClass="QuoteTableViewController" sceneMemberID="viewController">
@@ -29,7 +29,7 @@
                             <outlet property="delegate" destination="PLB-fb-OqL" id="SQz-Vd-yj5"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="xD0-d4-gjf">
+                    <navigationItem key="navigationItem" title="InspoQuotes" id="xD0-d4-gjf">
                         <barButtonItem key="rightBarButtonItem" title="Restore" id="VrL-m3-Z3e">
                             <connections>
                                 <action selector="restorePressed:" destination="PLB-fb-OqL" id="TWB-XA-U5h"/>

@@ -105,10 +105,6 @@ class QuoteTableViewController: UITableViewController {
     }
     */
     
-    
-    
-    
-    
 
     @IBAction func restorePressed(_ sender: UIBarButtonItem) {
     }
