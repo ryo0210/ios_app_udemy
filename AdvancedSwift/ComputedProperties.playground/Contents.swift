@@ -1,6 +1,26 @@
 import Foundation
 
-let pizzaInInches: Int = 16
+var pizzaInInches: Int = 10 {
+    // 実際にはあり得ない数字にならないように、いつ変更されるかを監視する。
+    
+    // 変更直前
+    willSet {
+        print(pizzaInInches) // 変更前の値（10）
+        print(newValue) // 新しい値（33）
+    }
+    // 変更直後
+    didSet {
+        print(oldValue) //以前の値（10）
+        if pizzaInInches >= 18 {
+            print("無効なサイズが指定されたので、pizzaInInchesを18に設定しました。")
+            pizzaInInches = 18
+        }
+        print(pizzaInInches) // 変更後の値（18）
+    }
+}
+
+
+pizzaInInches = 33
 var numberOfPeople: Int = 12
 let slicePerPerson: Int = 4
 
