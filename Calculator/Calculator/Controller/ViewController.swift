@@ -31,10 +31,10 @@ class ViewController: UIViewController {
         
         if let calcMethod = sender.currentTitle {
             
-            let calculator = Calculator(number: displayValue)
+            let calculator = CalculatorLogic(number: displayValue)
             
-            guard let result = calculator.calculator(symbol: calcMethod) else {
-                fatalError("rrror")
+            guard let result = calculator.calculate(symbol: calcMethod) else {
+                fatalError("計算結果がnilです。")
             }
             displayValue = result
         }
