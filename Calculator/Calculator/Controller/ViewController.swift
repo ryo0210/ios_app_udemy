@@ -36,10 +36,9 @@ class ViewController: UIViewController {
         
         if let calcMethod = sender.currentTitle {
                         
-            guard let result = calculator.calculate(symbol: calcMethod) else {
-                fatalError("計算結果がnilです。")
+            if let result = calculator.calculate(symbol: calcMethod) {
+                displayValue = result
             }
-            displayValue = result
         }
     }
     
@@ -51,16 +50,12 @@ class ViewController: UIViewController {
                 isFinishedTypeNumber = false
             } else {
                 if numValue == "."{
-                    guard let currentDisplayValue = Double(displayLabel.text!) else {
-                        fatalError("display labelのtextをDoble型に変換できません。")
-                    }
-                    let isInt = floor(currentDisplayValue) == currentDisplayValue
+                    let isInt = floor(displayValue) == displayValue
                     if !isInt {
                         return
                     }
                 }
                 displayLabel.text = displayLabel.text! + numValue
-                    
             }
         }
     }

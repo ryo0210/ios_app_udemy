@@ -24,6 +24,10 @@ struct CalculatorLogic {
     
     private var number: Double?
     
+    // 計算に必要な数と記号を一時的に保存する。
+    // 辞書と違って様々なデータ型を保存する柔軟性があり構造体やクラスを作成するほど大変ではない。
+    private var intermediateCalculation: (n1: Double, calcMethod: String)?
+    
     // 構造体の変数を変化させるので、mutatingをつける。
     mutating func setNumber(_ number: Double) {
         self.number = number
@@ -35,14 +39,38 @@ struct CalculatorLogic {
 //        self.number = number
 //    }
     
-    func calculate(symbol: String) -> Double? {
+    mutating func calculate(symbol: String) -> Double? {
         if let n = number {
-            if symbol == "+/-" {
+            switch symbol {
+            case "+/-":
                 return n * -1
-            } else if symbol == "AC" {
+            case "AC":
                 return 0
-            } else if symbol == "%" {
+            case "%":
                 return n * 0.01
+            case "=":
+                return performTwoNumCalculation(n2: n)
+            default:
+                intermediateCalculation = (n1: n, calcMethod: symbol)
+            }
+        }
+        return nil
+    }
+    
+    private func performTwoNumCalculation(n2: Double) -> Double? {
+        
+        if let n1 = intermediateCalculation?.n1, let operation = intermediateCalculation?.calcMethod {
+            switch operation {
+            case "+":
+                return n1 + n2
+            case "-":
+                return n1 - n2
+            case "×":
+                return n1 * n2
+            case "÷":
+                return n1 / n2
+            default:
+                fatalError("operationがどのケースとも一致しません。")
             }
         }
         return nil
