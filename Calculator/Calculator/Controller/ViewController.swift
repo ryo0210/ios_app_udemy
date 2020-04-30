@@ -24,15 +24,18 @@ class ViewController: UIViewController {
             displayLabel.text = String(newValue)
         }
     }
+    
+    // 他のクラスがprivate宣言子をつける。
+    private var calculator = CalculatorLogic()
 
     @IBAction func calButtonPressed(_ sender: UIButton) {
         
         isFinishedTypeNumber = true
         
+        calculator.setNumber(displayValue)
+        
         if let calcMethod = sender.currentTitle {
-            
-            let calculator = CalculatorLogic(number: displayValue)
-            
+                        
             guard let result = calculator.calculate(symbol: calcMethod) else {
                 fatalError("計算結果がnilです。")
             }

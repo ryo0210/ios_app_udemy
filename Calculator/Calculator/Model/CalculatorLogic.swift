@@ -22,20 +22,28 @@ import Foundation
 
 struct CalculatorLogic {
     
-    var number: Double
+    private var number: Double?
     
-    init (number: Double) {
-        // 左が上で定義したグローバル変数で、右がローカル変数。
+    // 構造体の変数を変化させるので、mutatingをつける。
+    mutating func setNumber(_ number: Double) {
         self.number = number
     }
+
+// classからstructに変更したので、initはいらない。
+//    init (number: Double) {
+//        // 左が上で定義したグローバル変数で、右がローカル変数。
+//        self.number = number
+//    }
     
     func calculate(symbol: String) -> Double? {
-        if symbol == "+/-" {
-            return number * -1
-        } else if symbol == "AC" {
-            return 0
-        } else if symbol == "%" {
-            return number * 0.01
+        if let n = number {
+            if symbol == "+/-" {
+                return n * -1
+            } else if symbol == "AC" {
+                return 0
+            } else if symbol == "%" {
+                return n * 0.01
+            }
         }
         return nil
     }
