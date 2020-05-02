@@ -13,6 +13,8 @@ import Vision
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var firstResultLabel: UILabel!
+    @IBOutlet weak var secondResultLabel: UILabel!
     
     let imagePicker = UIImagePickerController()
     
@@ -22,6 +24,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         imagePicker.delegate = self
         imagePicker.sourceType = .camera
         imagePicker.allowsEditing = false
+        firstResultLabel.text = "take a photo"
         
     }
 
@@ -55,12 +58,26 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             }
             
             if let firstResult = results.first {
-                if firstResult.identifier.contains("hotdog") {
-                    self.navigationItem.title = "Hotdog!"
-                } else {
-                    self.navigationItem.title = "Not Hotdog"
-                }
+                let firstIndebtfier = String(firstResult.identifier)
+                let firstConfidence = (round(firstResult.confidence * 1000) / 10)
+                self.firstResultLabel.text = ("\(firstIndebtfier):\(firstConfidence)%")
             }
+            
+            let secondResult: VNClassificationObservation = results[1]
+            let secondIndebtfier = String(secondResult.identifier)
+            let secondConfidence = (round(secondResult.confidence * 1000) / 10)
+            self.secondResultLabel.text = ("\(secondIndebtfier):\(secondConfidence)%")
+            
+            print("===============================")
+            print(results[0])
+            print("===============================")
+            print(results[1])
+            print("===============================")
+            print(results[2])
+            print("===============================")
+            print(results[3])
+
+
         }
         
         let handler = VNImageRequestHandler(ciImage: image)
@@ -73,4 +90,3 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
 }
-

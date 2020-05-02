@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="5ck-wH-uQi">
-    <device id="retina6_5" orientation="portrait" appearance="light"/>
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -12,19 +12,37 @@
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="SeeFood" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="viC-GI-Wu3">
+                                <rect key="frame" x="20" y="54" width="335" height="24"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rFT-yl-nQ4">
+                                <rect key="frame" x="20" y="88" width="335" height="21.5"/>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="7RO-Uw-GRg">
-                                <rect key="frame" x="0.0" y="88" width="414" height="808"/>
+                                <rect key="frame" x="0.0" y="124.5" width="375" height="542.5"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="YFy-sd-lmS" firstAttribute="trailing" secondItem="7RO-Uw-GRg" secondAttribute="trailing" id="AOX-yB-D6K"/>
-                            <constraint firstItem="7RO-Uw-GRg" firstAttribute="leading" secondItem="YFy-sd-lmS" secondAttribute="leading" id="EwT-7C-T34"/>
-                            <constraint firstItem="7RO-Uw-GRg" firstAttribute="top" secondItem="YFy-sd-lmS" secondAttribute="top" id="LlQ-r6-ff5"/>
-                            <constraint firstAttribute="bottom" secondItem="7RO-Uw-GRg" secondAttribute="bottom" id="nKd-u0-Ojp"/>
+                            <constraint firstAttribute="trailing" secondItem="7RO-Uw-GRg" secondAttribute="trailing" id="Cmv-Pe-M2K"/>
+                            <constraint firstItem="viC-GI-Wu3" firstAttribute="leading" secondItem="YFy-sd-lmS" secondAttribute="leading" constant="20" id="FEf-Or-KiU"/>
+                            <constraint firstItem="rFT-yl-nQ4" firstAttribute="leading" secondItem="YFy-sd-lmS" secondAttribute="leading" constant="20" id="FVz-Bu-cQ2"/>
+                            <constraint firstItem="7RO-Uw-GRg" firstAttribute="bottom" secondItem="YFy-sd-lmS" secondAttribute="bottom" id="J9W-bl-5Ro"/>
+                            <constraint firstAttribute="trailing" secondItem="viC-GI-Wu3" secondAttribute="trailing" constant="20" id="aAD-DY-FE9"/>
+                            <constraint firstItem="rFT-yl-nQ4" firstAttribute="top" secondItem="viC-GI-Wu3" secondAttribute="bottom" constant="10" id="as9-m0-eQ4"/>
+                            <constraint firstItem="7RO-Uw-GRg" firstAttribute="top" secondItem="rFT-yl-nQ4" secondAttribute="bottom" constant="15" id="if0-9a-cA9"/>
+                            <constraint firstItem="YFy-sd-lmS" firstAttribute="trailing" secondItem="rFT-yl-nQ4" secondAttribute="trailing" constant="20" id="kI9-mx-aAK"/>
+                            <constraint firstItem="7RO-Uw-GRg" firstAttribute="leading" secondItem="YFy-sd-lmS" secondAttribute="leading" id="vUC-ip-0Nd"/>
+                            <constraint firstItem="viC-GI-Wu3" firstAttribute="top" secondItem="YFy-sd-lmS" secondAttribute="top" constant="10" id="yT2-Eo-ZdH"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="YFy-sd-lmS"/>
                     </view>
@@ -36,7 +54,9 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="firstResultLabel" destination="viC-GI-Wu3" id="VM8-E7-h59"/>
                         <outlet property="imageView" destination="7RO-Uw-GRg" id="OJq-Xr-85u"/>
+                        <outlet property="secondResultLabel" destination="rFT-yl-nQ4" id="u37-Ww-8dd"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -49,7 +69,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="5ck-wH-uQi" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="rbT-wf-iWT">
-                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
