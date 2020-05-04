@@ -1,5 +1,8 @@
 .DS_Store
 
+WhatFlower/WhatFlower/FlowerClassifier.mlmodel
+*.mlmodel
+
 librealmcore-ios.a
 
 # Xcode
