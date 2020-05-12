@@ -27,10 +27,10 @@ struct ContentView_Previews: PreviewProvider {
 
 // PostをIdentifiableプロトコルに準拠させることで、
 // リストがこれに基づいてPostオブジェクトの順序を認識できるようになる。
-struct Post: Identifiable {
-    let id: String
-    let title: String
-}
+//struct Post: Identifiable {
+//    let id: String
+//    let title: String
+//}
 // データの一部を取得し、そのデータを使用してその行を計算するものを使用します。
 
 let posts = [
