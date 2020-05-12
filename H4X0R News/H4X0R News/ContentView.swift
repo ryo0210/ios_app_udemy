@@ -9,12 +9,19 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @ObservedObject var networkManager = NetworkManager()
+    
     var body: some View {
         NavigationView {
-            List(posts) { post in
+            List(networkManager.posts) { post in
+                Text(String(post.points))
                 Text(post.title)
             }
             .navigationBarTitle("H4X0R News")
+        }
+        .onAppear {
+            self.networkManager.fetchData()
         }
     }
 }
@@ -32,9 +39,3 @@ struct ContentView_Previews: PreviewProvider {
 //    let title: String
 //}
 // データの一部を取得し、そのデータを使用してその行を計算するものを使用します。
-
-let posts = [
-    Post(id: "1", title: "hello"),
-    Post(id: "2", title: "bonjour"),
-    Post(id: "3", title: "hi")
-]
